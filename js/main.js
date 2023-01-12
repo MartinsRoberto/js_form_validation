@@ -1,75 +1,114 @@
-const a = document.querySelector('#name')
-const email = document.querySelector('#email')
-const password = document.querySelector('#password')
-const confirmPassword = document.querySelector('#confirm-password')
-const phone = document.querySelector('#phone')
-const inputs = document.querySelectorAll('#form input')
-const btn = document.querySelector('#submit')
-const invalidPassword = document.querySelector('.invalid-password')
+(function(){
+  'use strict'
 
-btn.addEventListener('click', (e) => {
-  e.preventDefault()
+  const name = document.querySelector('#name')
+  const email = document.querySelector('#email')
+  const password = document.querySelector('#password')
+  const confirmPassword = document.querySelector('#confirm-password')
+  const phone = document.querySelector('#phone')
+  const btn = document.querySelector('#submit')
 
-  removeAllWarning()
+  email.disabled = true
+  password.disabled = true
+  confirmPassword.disabled = true
+  phone.disabled = true
+  btn.disabled = true
 
-  if(a.value == '') addWarning(a)
-  if(email.value == '') addWarning(email)
-  if(password.value == '') addWarning(password)
-  if(confirmPassword.value == '') addWarning(confirmPassword)
-  if(phone.value == '') addWarning(phone)
-
-  if(confirmPassword.value != password.value){
-    console.log('oi')
-    checkPassword()
-  }
-})
-
-const removeAllWarning = () => {
-  invalidPassword.style.display = 'none'
-
-  const inputs = document.querySelectorAll('#form .form-group')
-
-  inputs.forEach((item) => {
-    if(item.querySelector('.warning')){
-      item.querySelector('input').classList.remove('warning-border')
-      item.querySelector('.warning').remove()
+  name.addEventListener('input', () => {
+    if(name.value){
+      email.disabled = false
+    }
+    else{
+      email.disabled = true
+      password.disabled = true
+      confirmPassword.disabled = true
+      phone.disabled = true
     }
   })
-}
 
-inputs.forEach((item) => {
-  item.addEventListener('input', () => {
-    if(item.classList.contains('warning-border')){
-      item.classList.remove('warning-border')
-      item.parentElement.querySelector('.warning').remove()
+  email.addEventListener('input', () => {
+    if(email.value && isEmailValid(email.value)){
+      password.disabled = false
+    }
+    else{
+      password.disabled = true
+      confirmPassword.disabled = true
+      phone.disabled = true
+    }
+
+  })
+
+  password.addEventListener('input', () => {
+    if(password.value){
+      confirmPassword.disabled = false
+    }
+    else{
+      confirmPassword.disabled = true
+      phone.disabled = true
     }
   })
-})
 
-phone.addEventListener('input', () => {
-  const formatedNumber = phoneMask(phone.value)  
+  confirmPassword.addEventListener('input', () => {
+    if(confirmPassword.value && checkPassword()){
+      phone.disabled = false
+    }
+    else{
+      phone.disabled = true
+    }
+  })
+
+  phone.addEventListener('input', () => {
+    phone.value = phoneMask(phone.value)
+
+    if(phone.value.length == 15){
+      btn.disabled = false
+    }
+    else{
+      btn.disabled = true
+    }
+  })
+
+  btn.addEventListener('click', (e) => e.preventDefault())
+
+  const isEmailValid = (email) =>{
+    const emailRegex = new RegExp(
+      /^[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]{2,}$/
+    );
   
-  phone.value = formatedNumber
-})
+    if (emailRegex.test(email)) {
+      return true;
+    }
+  
+    return false;
+  }
 
-const addWarning = (input) => {
-  let warning = document.createElement('div')
-  warning.setAttribute('class','warning')
-  warning.textContent = 'Campo vazio'
 
-  input.parentNode.appendChild(warning)
-  input.classList.add('warning-border')
-}
+  
+  const checkPassword = () => {
+    if(password.value == confirmPassword.value){
+      if(confirmPassword.closest('div').querySelector('.text-warning')){
+        confirmPassword.closest('div').querySelector('.text-warning').remove()
+      }
+      return true
+    }
 
-const checkPassword = () => {
-  invalidPassword.style.display = 'block'
-}
+    const text = document.createElement('p')
+    text.textContent = `As senhas são diferentes`
+    text.setAttribute('class', 'text-warning')
 
-const phoneMask = (value) => {
-  if (!value) return ""
-  value = value.replace(/\D/g,'')
-  value = value.replace(/(\d{2})(\d)/,"($1) $2")
-  value = value.replace(/(\d)(\d{4})$/,"$1-$2")
+    if(!confirmPassword.closest('div').querySelector('.text-warning')){
+      confirmPassword.closest('div').appendChild(text)
+    }
 
-  return value
-}
+    return false
+  }
+
+  const phoneMask = (value) => {
+    if (!value) return ""
+    value = value.replace(/\D/g,'')
+    value = value.replace(/(\d{2})(\d)/,"($1) $2")
+    value = value.replace(/(\d)(\d{4})$/,"$1-$2")
+
+    return value
+  }
+})();

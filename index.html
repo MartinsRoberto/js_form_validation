@@ -11,16 +11,19 @@
 </head>
 <body>
   <div class="container">
-    <h3>Cadastro</h3>
+    <div class="header">
+      <h3>Cadastro</h3>
+      <p>Por favor, preencha os campos em sequência</p>
+    </div>
     <div class="progress-form"></div>
     <form id="form">
       <div class="form-group">
         <label for="name">Nome:</label>
-        <input type="text" id="name" placeholder="Seu nome...">
+        <input type="text" id="name" placeholder="Seu nome..." >
       </div>
       <div class="form-group">
         <label for="email">Email:</label>
-        <input type="email" id="email" placeholder="eu@email.com">
+        <input type="email" id="email" placeholder="seu@email.com" >
       </div>
       <div class="form-group">
         <label for="password">Senha:</label>
@@ -33,9 +36,6 @@
       <div class="form-group">
         <label for="phone">Telefone:</label>
         <input type="tel" maxlength="15" id="phone" placeholder="(99) 99999-9999">
-      </div>
-      <div class="invalid-password">
-        As senhas são diferentes, por favor confira novamente
       </div>
       <button id="submit">Cadastrar</button>
     </form>
